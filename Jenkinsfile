@@ -2,34 +2,29 @@ pipeline {
     agent any
 
     stages {
-
-        stage('cleanWS') {
+        stage('git clone & build') {
             steps {
-                cleanWs()
-            }
-        }
-
-        stage('clone git') {
-            steps {
-                git 'https://github.com/Elad0109/simple-webapp-nodejs.git'
-            }
-        }
-        stage('build') {
-            steps {
-                nodejs('Node8') {
-                    sh "npm install"
+                parallel(
+                    a: {
+                        echo 'git clone'
+                    },
+                    b: {
+                        echo 'build'
+                    }
+                    )
                 }
-            }
         }
+       
         stage('test') {
             steps {
-                nodejs('Node8') {
-                    sh "npm run test"
-                }
-    
+                echo 'test'
             }
-
         }
-
+        stage('deploy') {
+            steps {
+                echo 'deploy'
+            }
+        }
     }
 }
+
